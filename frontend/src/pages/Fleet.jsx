@@ -81,6 +81,17 @@ const Fleet = () => {
     } catch { alert('Failed to delete log'); }
   };
 
+  const handleDeleteExpense = async (id, source) => {
+    if (!window.confirm(t('confirm_delete') || 'Are you sure?')) return;
+    try {
+      const endpoint = source === 'Fleet' ? `/api/vehicles/any/expenses/${id}` : `/api/finances/expenses/${id}`;
+      await api.delete(endpoint);
+      if (selectedVehicle) fetchVehicleDetails(selectedVehicle.id);
+      fetchVehicles();
+      refreshNotifications();
+    } catch (err) { console.error(err); alert('Failed to delete expense'); }
+  };
+
   const handleInsuranceDone = async (vehicle, newDate, amount, description) => {
     try {
       await Promise.all([
@@ -121,7 +132,9 @@ const Fleet = () => {
     if (!window.confirm(t('confirm_delete') || 'Are you sure?')) return;
     try {
       await api.delete(`/api/vehicles/${id}`);
-      fetchVehicles(); refreshNotifications();
+      if (selectedVehicle) fetchVehicleDetails(selectedVehicle.id);
+      fetchVehicles();
+      refreshNotifications();
     } catch { alert('Error deleting vehicle'); }
   };
 
@@ -476,8 +489,13 @@ const Fleet = () => {
                       <div style={{ width:`${calcOil(selectedVehicle).pct}%`, height:'100%', backgroundColor: calcOil(selectedVehicle).pct < 20 ? '#EF4444' : '#10B981' }}/>
                     </div>
                   </div>
-                  <div style={{ display:'flex', gap:'1rem', justifyContent:'center' }}>
-
+                  <div style={{ display:'flex', gap:'1rem', justifyContent:'center', flexWrap:'wrap' }}>
+                    <button className="btn" style={{ backgroundColor:'#EFF6FF', color:'var(--primary-blue)' }} onClick={() => { setConfirmAction({ type:'insurance', vehicle: selectedVehicle }); setShowDetailModal(false); }}>
+                      <FiShield/> {t('confirm_insurance')}
+                    </button>
+                    <button className="btn" style={{ backgroundColor:'#E0F2FE', color:'#0369A1' }} onClick={() => { setConfirmAction({ type:'tech', vehicle: selectedVehicle }); setShowDetailModal(false); }}>
+                      <FiActivity/> {t('confirm_tech')}
+                    </button>
                     <button className="btn btn-primary" onClick={() => { setConfirmAction({ type:'oil', vehicle: selectedVehicle }); setShowDetailModal(false); }}>
                       <FiCheckCircle/> {t('oil_change_completed')}
                     </button>
@@ -494,8 +512,27 @@ const Fleet = () => {
                   </form>
                   <div className="data-table-container">
                     <table className="data-table">
-                      <thead><tr><th>{t('date')}</th><th>{t('category')}</th><th>{t('description')}</th><th>{t('amount')}</th></tr></thead>
-                      <tbody>{expenses.map(ex => (<tr key={ex.id}><td>{new Date(ex.date).toLocaleDateString()}</td><td>{ex.category}</td><td>{ex.description}</td><td style={{ fontWeight:'800' }}>{ex.amount} DT</td></tr>))}</tbody>
+                      <thead><tr><th>{t('date')}</th><th>{t('category')}</th><th>{t('description')}</th><th>{t('amount')}</th><th>{t('actions')}</th></tr></thead>
+                      <tbody>{expenses.map(ex => (
+                        <tr key={ex.id}>
+                          <td>{new Date(ex.date).toLocaleDateString()}</td>
+                          <td>{ex.category}</td>
+                          <td>{ex.description}</td>
+                          <td style={{ fontWeight:'800' }}>{ex.amount} DT</td>
+                          <td>
+                            <div style={{ display:'flex', gap:'0.5rem' }}>
+                              <button className="btn btn-secondary" style={{ padding:'0.4rem' }} onClick={() => {
+                                // Logic to edit vehicle expense (similar to general expenses)
+                                const amt = window.prompt("New Amount:", ex.amount);
+                                if (amt) {
+                                  api.put(`/api/finances/expenses/${ex.id}`, { ...ex, amount: amt }).then(() => fetchVehicleDetails(selectedVehicle.id));
+                                }
+                              }}><FiEdit size={14}/></button>
+                              <button className="btn" style={{ padding:'0.4rem', backgroundColor:'#FEE2E2', color:'#EF4444' }} onClick={() => handleDeleteExpense(ex.id, 'Fleet')}><FiTrash2 size={14}/></button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}</tbody>
                     </table>
                   </div>
                 </div>

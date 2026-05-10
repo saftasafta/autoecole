@@ -193,7 +193,7 @@ const StudentModal = ({ studentId, onClose }) => {
                         const sessionLabel = lang === 'ar' ? 'حصة عدد' : 'Session N°';
                         const typeTranslation = session.type === 'Code' ? (lang === 'ar' ? 'الكود' : 'Code') : 
                                                 session.type === 'Conduite' ? (lang === 'ar' ? 'سياقة' : 'Conduite') : 
-                                                session.type === 'Parking' ? (lang === 'ar' ? 'الركن' : 'Parking') : session.type;
+                                                session.type === 'Parking' ? 'Parking' : session.type;
                         
                         return (
                           <li key={session.id} style={{ padding: '0.75rem', borderBottom: '1px solid #E5E7EB' }}>

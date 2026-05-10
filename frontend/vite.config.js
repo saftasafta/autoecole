@@ -9,20 +9,25 @@ export default defineConfig({
     VitePWA({
       registerType: 'autoUpdate',
       manifest: {
-        name: 'Auto-Ecole Pro',
+        name: 'Auto-Ecole Management Pro',
         short_name: 'AutoEcole',
-        description: 'Système de gestion Auto-Ecole',
+        description: 'Système de gestion complet pour Auto-Ecole',
         theme_color: '#3B82F6',
+        background_color: '#ffffff',
+        display: 'standalone',
+        orientation: 'portrait',
         icons: [
           {
             src: 'pwa-192x192.png',
             sizes: '192x192',
-            type: 'image/png'
+            type: 'image/png',
+            purpose: 'any maskable'
           },
           {
             src: 'pwa-512x512.png',
             sizes: '512x512',
-            type: 'image/png'
+            type: 'image/png',
+            purpose: 'any maskable'
           }
         ]
       }

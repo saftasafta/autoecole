@@ -479,26 +479,59 @@ const Fleet = () => {
                 </div>
               )}
               {activeTab==='maintenance' && (
-                <div style={{ textAlign:'center', padding:'2rem' }}>
-                  <p style={{ marginBottom:'1rem', color:'var(--text-medium)' }}>{t('last_oil_change')}: <strong>{selectedVehicle.last_oil_change_km} km</strong> — {t('current')}: <strong>{selectedVehicle.mileage} km</strong></p>
-                  <div style={{ maxWidth:'400px', margin:'0 auto 2rem' }}>
-                    <div style={{ display:'flex', justifyContent:'space-between', marginBottom:'0.5rem', fontSize:'0.9rem', fontWeight:'700' }}>
-                      <span>{t('oil_change')}</span><span>{calcOil(selectedVehicle).remaining} km {t('remaining')}</span>
-                    </div>
-                    <div style={{ width:'100%', height:'12px', backgroundColor:'#F1F5F9', borderRadius:'6px', overflow:'hidden' }}>
-                      <div style={{ width:`${calcOil(selectedVehicle).pct}%`, height:'100%', backgroundColor: calcOil(selectedVehicle).pct < 20 ? '#EF4444' : '#10B981' }}/>
-                    </div>
-                  </div>
-                  <div style={{ display:'flex', gap:'1rem', justifyContent:'center', flexWrap:'wrap' }}>
-                    <button className="btn" style={{ backgroundColor:'#EFF6FF', color:'var(--primary-blue)' }} onClick={() => { setConfirmAction({ type:'insurance', vehicle: selectedVehicle }); setShowDetailModal(false); }}>
+                <div style={{ padding:'1rem' }}>
+                  <div style={{ display:'flex', gap:'1rem', justifyContent:'center', flexWrap:'wrap', marginBottom:'2.5rem', backgroundColor:'#F8FAFC', padding:'1.5rem', borderRadius:'20px', border:'1px solid #E2E8F0' }}>
+                    <button className="btn" style={{ backgroundColor:'#EFF6FF', color:'var(--primary-blue)', flex:1, minWidth:'150px' }} onClick={() => { setConfirmAction({ type:'insurance', vehicle: selectedVehicle }); setShowDetailModal(false); }}>
                       <FiShield/> {t('confirm_insurance')}
                     </button>
-                    <button className="btn" style={{ backgroundColor:'#E0F2FE', color:'#0369A1' }} onClick={() => { setConfirmAction({ type:'tech', vehicle: selectedVehicle }); setShowDetailModal(false); }}>
+                    <button className="btn" style={{ backgroundColor:'#E0F2FE', color:'#0369A1', flex:1, minWidth:'150px' }} onClick={() => { setConfirmAction({ type:'tech', vehicle: selectedVehicle }); setShowDetailModal(false); }}>
                       <FiActivity/> {t('confirm_tech')}
                     </button>
-                    <button className="btn btn-primary" onClick={() => { setConfirmAction({ type:'oil', vehicle: selectedVehicle }); setShowDetailModal(false); }}>
+                    <button className="btn btn-primary" style={{ flex:1, minWidth:'150px' }} onClick={() => { setConfirmAction({ type:'oil', vehicle: selectedVehicle }); setShowDetailModal(false); }}>
                       <FiCheckCircle/> {t('oil_change_completed')}
                     </button>
+                  </div>
+
+                  <div style={{ textAlign:'center', marginBottom:'2.5rem', padding:'1.5rem', backgroundColor:'white', borderRadius:'20px', border:'1px solid #F1F5F9' }}>
+                    <h3 style={{ fontSize:'1.1rem', marginBottom:'1rem', color:'var(--text-dark)' }}>{t('oil_status') || 'حالة الزيت'}</h3>
+                    <div style={{ display:'grid', gridTemplateColumns:'repeat(3, 1fr)', gap:'1rem' }}>
+                      <div style={{ padding:'1rem', backgroundColor:'#F8FAFC', borderRadius:'12px' }}>
+                        <p style={{ fontSize:'0.8rem', color:'var(--text-medium)' }}>{t('last_oil_change')}</p>
+                        <p style={{ fontSize:'1.1rem', fontWeight:'800' }}>{selectedVehicle.last_oil_change_km} km</p>
+                      </div>
+                      <div style={{ padding:'1rem', backgroundColor:'#F8FAFC', borderRadius:'12px' }}>
+                        <p style={{ fontSize:'0.8rem', color:'var(--text-medium)' }}>{t('current_km') || 'العداد الحالي'}</p>
+                        <p style={{ fontSize:'1.1rem', fontWeight:'800' }}>{selectedVehicle.mileage} km</p>
+                      </div>
+                      <div style={{ padding:'1rem', backgroundColor: calcOil(selectedVehicle).remaining < 1000 ? '#FEE2E2' : '#F8FAFC', borderRadius:'12px', color: calcOil(selectedVehicle).remaining < 1000 ? '#EF4444' : 'inherit' }}>
+                        <p style={{ fontSize:'0.8rem', color: calcOil(selectedVehicle).remaining < 1000 ? '#EF4444' : 'var(--text-medium)' }}>{t('remaining')}</p>
+                        <p style={{ fontSize:'1.1rem', fontWeight:'800' }}>{calcOil(selectedVehicle).remaining} km</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div style={{ marginTop:'2rem' }}>
+                    <h3 style={{ fontSize:'1rem', fontWeight:'700', marginBottom:'1rem', display:'flex', alignItems:'center', gap:'0.5rem' }}>
+                      <FiClock size={18}/> {t('confirmation_history') || 'سجل التأكيدات'}
+                    </h3>
+                    <div className="data-table-container">
+                      <table className="data-table">
+                        <thead><tr><th>{t('date')}</th><th>{t('type') || 'النوع'}</th><th>{t('description')}</th><th>{t('amount')}</th></tr></thead>
+                        <tbody>
+                          {expenses.filter(ex => ['Repair', 'Insurance', 'Insurance'].includes(ex.category) || ex.description.includes('زيت') || ex.description.includes('تأمين') || ex.description.includes('فحص')).slice(0, 5).map(ex => (
+                            <tr key={ex.id}>
+                              <td>{new Date(ex.date).toLocaleDateString()} {new Date(ex.date).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</td>
+                              <td>{ex.category === 'Insurance' ? t('insurance') : t('maintenance')}</td>
+                              <td style={{ fontWeight:'600' }}>{ex.description}</td>
+                              <td>{ex.amount} DT</td>
+                            </tr>
+                          ))}
+                          {expenses.filter(ex => ex.description.includes('زيت') || ex.description.includes('تأمين') || ex.description.includes('فحص')).length === 0 && (
+                            <tr><td colSpan="4" style={{ textAlign:'center', color:'var(--text-medium)', padding:'2rem' }}>{t('no_history') || 'لا يوجد سجل تأكيدات بعد'}</td></tr>
+                          )}
+                        </tbody>
+                      </table>
+                    </div>
                   </div>
                 </div>
               )}

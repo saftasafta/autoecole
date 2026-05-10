@@ -213,7 +213,11 @@ export const translations = {
     rent: "الكراء",
     salary: "الرواتب",
     art_of_driving: "مدرستنا: طريقكم نحو التميز في القيادة",
-    art_desc: "نحن لا نعلمكم القيادة فحسب، بل نصنع منكم محترفين يتقنون فن التعامل مع الطريق بكل ثقة وأمان."
+    art_desc: "نحن لا نعلمكم القيادة فحسب، بل نصنع منكم محترفين يتقنون فن التعامل مع الطريق بكل ثقة وأمان.",
+    oil_status: "حالة الزيت والعداد",
+    current_km: "العداد الحالي",
+    confirmation_history: "سجل التأكيدات والصيانة",
+    no_history: "لا يوجد سجل تأكيدات بعد"
   },
   fr: {
     dashboard: "Tableau de bord",
@@ -429,7 +433,11 @@ export const translations = {
     rent: "Loyer",
     salary: "Salaires",
     art_of_driving: "L'Excellence au Volant",
-    art_desc: "Bien plus qu'une simple leçon, nous forgeons des conducteurs responsables et maîtres de la route."
+    art_desc: "Bien plus qu'une simple leçon, nous forgeons des conducteurs responsables et maîtres de la route.",
+    oil_status: "État du pétrole et compteur",
+    current_km: "Compteur actuel",
+    confirmation_history: "Historique des confirmations",
+    no_history: "Aucun historique pour le moment"
   },
   en: {
     dashboard: "Dashboard",
@@ -618,6 +626,10 @@ export const translations = {
     daily: "Daily",
     num_days: "Number of days",
     art_of_driving: "Excellence Behind the Wheel",
-    art_desc: "More than just a lesson, we forge responsible drivers who master the road."
+    art_desc: "More than just a lesson, we forge responsible drivers who master the road.",
+    oil_status: "Oil & Mileage Status",
+    current_km: "Current Mileage",
+    confirmation_history: "Confirmation History",
+    no_history: "No confirmation history yet"
   }
 };

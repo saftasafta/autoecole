@@ -13,6 +13,7 @@ import Exams from './pages/Exams';
 import Fleet from './pages/Fleet';
 import Instructors from './pages/Instructors';
 import Finances from './pages/Finances';
+import HomeArt from './pages/HomeArt';
 
 // Private Route Component
 const PrivateRoute = ({ children }) => {
@@ -44,6 +45,7 @@ function App() {
               <Route path="fleet" element={<Fleet />} />
               <Route path="instructors" element={<Instructors />} />
               <Route path="finances" element={<Finances />} />
+              <Route path="home-art" element={<HomeArt />} />
             </Route>
           </Routes>
         </Router>

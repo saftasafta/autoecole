@@ -896,6 +896,10 @@ app.get('/api/instructors', authenticateToken, (req, res) => {
       pass_rate: ins.total_exams > 0 ? ((ins.passed_exams / ins.total_exams) * 100).toFixed(1) : 0,
       fail_rate: ins.total_exams > 0 ? ((ins.failed_exams / ins.total_exams) * 100).toFixed(1) : 0
     }));
+    res.json(mapped);
+  });
+});
+
 app.post('/api/instructors', authenticateToken, async (req, res) => {
   const { name, email, password, phone, role, mission } = req.body;
   

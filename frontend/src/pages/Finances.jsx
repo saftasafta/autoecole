@@ -49,7 +49,8 @@ const Finances = () => {
     setLoading(true);
     try {
       if (editingExpense) {
-        await api.put(`/api/finances/expenses/${editingExpense.id}`, newExpense);
+        const endpoint = editingExpense.source === 'Fleet' ? `/api/vehicles/any/expenses/${editingExpense.id}` : `/api/finances/expenses/${editingExpense.id}`;
+        await api.put(endpoint, newExpense);
       } else {
         await api.post('/api/finances/expenses', newExpense);
       }
@@ -169,11 +170,10 @@ const Finances = () => {
                   <td>
                     <div style={{ display: 'flex', gap: '0.5rem' }}>
                       <button className="btn btn-secondary btn-sm" onClick={() => {
-                        if (ex.source === 'Fleet') return alert(t('fleet_expense_alert'));
                         setEditingExpense(ex);
                         setNewExpense({ amount: ex.amount, category: ex.category, date: ex.date, description: ex.description });
                         setShowModal(true);
-                      }} style={{ padding: '0.4rem', opacity: ex.source === 'Fleet' ? 0.5 : 1 }}>
+                      }} style={{ padding: '0.4rem' }}>
                         <FiEdit2 size={14} />
                       </button>
                       <button className="btn btn-danger btn-sm" onClick={() => handleDeleteExpense(ex.id, ex.source)} style={{ padding: '0.4rem', backgroundColor: '#FEE2E2', color: '#EF4444', border: 'none' }}>

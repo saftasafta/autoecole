@@ -644,6 +644,19 @@ app.delete('/api/vehicles/any/expenses/:id', authenticateToken, (req, res) => {
   });
 });
 
+app.put('/api/vehicles/any/expenses/:id', authenticateToken, (req, res) => {
+  const { id } = req.params;
+  const { amount, category, date, description } = req.body;
+  const numAmount = parseFloat(amount);
+  if (isNaN(numAmount)) return res.status(400).json({ error: 'Invalid amount' });
+
+  db.run('UPDATE vehicle_expenses SET amount = ?, category = ?, date = ?, description = ? WHERE id = ?',
+    [numAmount, category, date, description, id], function(err) {
+      if (err) return res.status(500).json({ error: err.message });
+      res.json({ success: true });
+    });
+});
+
 // --- Vehicle Daily Logs ---
 app.get('/api/vehicles/:id/logs', authenticateToken, (req, res) => {
   const { id } = req.params;
@@ -786,10 +799,11 @@ app.get('/api/finances/expenses', authenticateToken, (req, res) => {
     if (err) return res.status(500).json({ error: err.message });
     
     const dataSql = `
-      SELECT id, amount, category, date, description, 'General' as source FROM general_expenses ${filter}
+      SELECT id, amount, category, date, description, NULL as vehicle_id, 'General' as source FROM general_expenses ${filter}
       UNION ALL
       SELECT ve.id, ve.amount, ve.category, ve.date, 
              ('Fleet: ' || COALESCE(v.model, 'Vehicule Supprimé') || ' (' || COALESCE(v.registration_plate, 'N/A') || ') ' || COALESCE(ve.description, '')) as description, 
+             ve.vehicle_id,
              'Fleet' as source 
       FROM vehicle_expenses ve
       LEFT JOIN vehicles v ON ve.vehicle_id = v.id

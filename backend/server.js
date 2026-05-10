@@ -267,6 +267,9 @@ app.get('/api/students/:id', authenticateToken, (req, res) => {
         COALESCE((SELECT SUM(duration_hours) FROM sessions WHERE student_id = s.id AND type = 'Conduite' AND status != 'cancelled'), 0) as total_driving_hours,
         COALESCE((SELECT SUM(duration_hours) FROM sessions WHERE student_id = s.id AND type = 'Parking' AND status != 'cancelled'), 0) as total_parking_hours,
         COALESCE((SELECT SUM(duration_hours) FROM sessions WHERE student_id = s.id AND type = 'Code' AND status != 'cancelled'), 0) as total_code_hours,
+        (SELECT COUNT(*) FROM sessions WHERE student_id = s.id AND type = 'Code' AND status != 'cancelled') as count_code_sessions,
+        (SELECT COUNT(*) FROM sessions WHERE student_id = s.id AND type = 'Conduite' AND status != 'cancelled') as count_driving_sessions,
+        (SELECT COUNT(*) FROM sessions WHERE student_id = s.id AND type = 'Parking' AND status != 'cancelled') as count_parking_sessions,
         (SELECT COUNT(*) FROM sessions WHERE student_id = s.id AND type = 'Examen Code' AND status != 'cancelled') as count_exam_code,
         (SELECT COUNT(*) FROM sessions WHERE student_id = s.id AND type = 'Examen Conduite' AND status != 'cancelled') as count_exam_driving,
         (SELECT COUNT(*) FROM sessions WHERE student_id = s.id AND type = 'Examen Parking' AND status != 'cancelled') as count_exam_parking,
@@ -296,13 +299,13 @@ app.get('/api/students/:id', authenticateToken, (req, res) => {
       student.payment_status = remaining <= 0 ? 'Payé' : 'Non Payé';
       
       student.billing_details = {
-        code_hours: { hours: student.total_code_hours, cost: codeHourCost, paid: student.paid_autre }, // Assuming 'autre' for now or similar
-        conduite: { hours: student.total_driving_hours, cost: drivingCost, paid: student.paid_conduite },
-        parking: { hours: student.total_parking_hours, cost: parkingCost, paid: student.paid_parking },
+        code_hours: { hours: student.total_code_hours, count: student.count_code_sessions, cost: codeHourCost, paid: student.paid_autre }, 
+        conduite: { hours: student.total_driving_hours, count: student.count_driving_sessions, cost: drivingCost, paid: student.paid_conduite },
+        parking: { hours: student.total_parking_hours, count: student.count_parking_sessions, cost: parkingCost, paid: student.paid_parking },
         exam_code: { count: student.count_exam_code, cost: student.count_exam_code * tariffs.exam_code_price, paid: student.paid_exam_code },
         exam_driving: { count: student.count_exam_driving, cost: student.count_exam_driving * tariffs.exam_driving_price, paid: student.paid_exam_driving },
         exam_parking: { count: student.count_exam_parking, cost: student.count_exam_parking * tariffs.exam_parking_price, paid: student.paid_exam_parking },
-        autre: { cost: 0, paid: student.paid_autre } // Just payments, no cost associated natively
+        autre: { cost: 0, paid: student.paid_autre } 
       };
       
       // fetch sessions and payments

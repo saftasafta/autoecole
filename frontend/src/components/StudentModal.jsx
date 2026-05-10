@@ -73,7 +73,9 @@ const StudentModal = ({ studentId, onClose }) => {
                     {/* Conduite */}
                     {(student.billing_details.conduite.hours > 0 || student.billing_details.conduite.paid > 0) && (
                       <tr style={{ borderBottom: '1px solid #F3F4F6' }}>
-                        <td style={{ padding: '0.75rem 0' }}>{t('lessons')} Conduite ({student.billing_details.conduite.hours} h)</td>
+                        <td style={{ padding: '0.75rem 0' }}>
+                          {t('lessons')} Conduite ({student.billing_details.conduite.count || 0} {lang === 'ar' ? 'حصة' : 'sessions'} - {student.billing_details.conduite.hours} h)
+                        </td>
                         <td style={{ padding: '0.75rem 0', textAlign: lang === 'ar' ? 'left' : 'right' }}>{student.billing_details.conduite.cost}</td>
                         <td style={{ padding: '0.75rem 0', textAlign: lang === 'ar' ? 'left' : 'right', color: '#10B981' }}>{student.billing_details.conduite.paid}</td>
                         <td style={{ padding: '0.75rem 0', textAlign: lang === 'ar' ? 'left' : 'right', fontWeight: 'bold', color: student.billing_details.conduite.cost - student.billing_details.conduite.paid > 0 ? '#DC2626' : '#059669' }}>
@@ -84,7 +86,9 @@ const StudentModal = ({ studentId, onClose }) => {
                     {/* Parking */}
                     {(student.billing_details.parking.hours > 0 || student.billing_details.parking.paid > 0) && (
                       <tr style={{ borderBottom: '1px solid #F3F4F6' }}>
-                        <td style={{ padding: '0.75rem 0' }}>{t('lessons')} Parking ({student.billing_details.parking.hours} h)</td>
+                        <td style={{ padding: '0.75rem 0' }}>
+                          {t('lessons')} Parking ({student.billing_details.parking.count || 0} {lang === 'ar' ? 'حصة' : 'sessions'} - {student.billing_details.parking.hours} h)
+                        </td>
                         <td style={{ padding: '0.75rem 0', textAlign: lang === 'ar' ? 'left' : 'right' }}>{student.billing_details.parking.cost}</td>
                         <td style={{ padding: '0.75rem 0', textAlign: lang === 'ar' ? 'left' : 'right', color: '#10B981' }}>{student.billing_details.parking.paid}</td>
                         <td style={{ padding: '0.75rem 0', textAlign: lang === 'ar' ? 'left' : 'right', fontWeight: 'bold', color: student.billing_details.parking.cost - student.billing_details.parking.paid > 0 ? '#DC2626' : '#059669' }}>
@@ -122,6 +126,19 @@ const StudentModal = ({ studentId, onClose }) => {
                         <td style={{ padding: '0.75rem 0', textAlign: lang === 'ar' ? 'left' : 'right', color: '#10B981' }}>{student.billing_details.exam_parking.paid}</td>
                         <td style={{ padding: '0.75rem 0', textAlign: lang === 'ar' ? 'left' : 'right', fontWeight: 'bold', color: student.billing_details.exam_parking.cost - student.billing_details.exam_parking.paid > 0 ? '#DC2626' : '#059669' }}>
                           {student.billing_details.exam_parking.cost - student.billing_details.exam_parking.paid}
+                        </td>
+                      </tr>
+                    )}
+                    {/* Code */}
+                    {(student.billing_details.code_hours.hours > 0 || student.billing_details.code_hours.paid > 0) && (
+                      <tr style={{ borderBottom: '1px solid #F3F4F6' }}>
+                        <td style={{ padding: '0.75rem 0' }}>
+                          {t('lessons')} Code ({student.billing_details.code_hours.count || 0} {lang === 'ar' ? 'حصة' : 'sessions'} - {student.billing_details.code_hours.hours} h)
+                        </td>
+                        <td style={{ padding: '0.75rem 0', textAlign: lang === 'ar' ? 'left' : 'right' }}>{student.billing_details.code_hours.cost}</td>
+                        <td style={{ padding: '0.75rem 0', textAlign: lang === 'ar' ? 'left' : 'right', color: '#10B981' }}>{student.billing_details.code_hours.paid}</td>
+                        <td style={{ padding: '0.75rem 0', textAlign: lang === 'ar' ? 'left' : 'right', fontWeight: 'bold', color: student.billing_details.code_hours.cost - student.billing_details.code_hours.paid > 0 ? '#DC2626' : '#059669' }}>
+                          {student.billing_details.code_hours.cost - student.billing_details.code_hours.paid}
                         </td>
                       </tr>
                     )}

@@ -175,6 +175,14 @@ const initDb = async () => {
 
     client.release();
     console.log('Cloud database initialized successfully.');
+
+    // Initialize Tariffs if empty
+    db.get('SELECT COUNT(*) as count FROM tariffs', [], (err, row) => {
+      if (!err && (parseInt(row.count) === 0)) {
+        db.run('INSERT INTO tariffs (code_hour_price, driving_hour_price, exam_code_price, exam_driving_price, exam_parking_price) VALUES (?, ?, ?, ?, ?)', 
+          [0, 0, 0, 0, 0]);
+      }
+    });
   } catch (err) {
     console.error('Error initializing cloud database:', err);
   }

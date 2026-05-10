@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import api from '../api';
 
-import { FiPlus, FiSearch, FiEye, FiEdit, FiTrash2, FiXCircle } from 'react-icons/fi';
+import { FiPlus, FiSearch, FiEye, FiEdit, FiTrash2 } from 'react-icons/fi';
 import { useLanguage } from '../LanguageContext';
 import StudentModal from '../components/StudentModal';
 import Pagination from '../components/Pagination';
@@ -14,8 +14,6 @@ const Students = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [viewStudentId, setViewStudentId] = useState(null);
   const [editingStudent, setEditingStudent] = useState(null);
-  const [studentSearch, setStudentSearch] = useState('');
-  const [showStudentDropdown, setShowStudentDropdown] = useState(false);
 
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -37,18 +35,7 @@ const Students = () => {
     return () => clearTimeout(delayDebounceFn);
   }, [fetchStudents, viewStudentId]);
 
-  useEffect(() => {
-    const searchStudentAPI = async () => {
-      if (studentSearch.length > 1 && showStudentDropdown) {
-        try {
-          const res = await api.get(`/api/students?limit=5&search=${studentSearch}`);
-          setStudents(res.data.data || []);
-        } catch (e) { console.error(e); }
-      }
-    };
-    const delay = setTimeout(searchStudentAPI, 300);
-    return () => clearTimeout(delay);
-  }, [studentSearch, showStudentDropdown]);
+
 
 
    const handleAddStudent = async (e) => {
@@ -75,16 +62,7 @@ const Students = () => {
     } catch (error) { alert(`Erreur: ${error.response?.data?.error || error.message}`); }
   };
   
-  const handleClearSessions = async (type) => {
-    if (!clearSessionsId || clearSessionsId === 'new') return alert(t('select_student'));
-    if (!window.confirm(t('confirm_delete'))) return;
-    try {
-      await api.delete(`/api/student-maintenance/${clearSessionsId}/clear-sessions?type=${type}`);
-      setClearSessionsId(null);
-      setStudentSearch('');
-      fetchStudents();
-    } catch (error) { alert(`Erreur: ${error.response?.data?.error || error.message}`); }
-  };
+
 
 
   const openEditModal = (student) => {

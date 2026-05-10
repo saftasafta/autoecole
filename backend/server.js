@@ -896,45 +896,30 @@ app.get('/api/instructors', authenticateToken, (req, res) => {
       pass_rate: ins.total_exams > 0 ? ((ins.passed_exams / ins.total_exams) * 100).toFixed(1) : 0,
       fail_rate: ins.total_exams > 0 ? ((ins.failed_exams / ins.total_exams) * 100).toFixed(1) : 0
     }));
-    res.json(mapped);
-  });
-});
-
 app.post('/api/instructors', authenticateToken, async (req, res) => {
   const { name, email, password, phone, role, mission } = req.body;
   
   try {
     const hash = await bcrypt.hash(password || '123456', 10);
     
-    db.serialize(() => {
-      db.run('BEGIN TRANSACTION');
-      
-      db.run(
-        `INSERT INTO users (name, email, password_hash, role, phone) VALUES (?, ?, ?, ?, ?)`,
-        [name, email, hash, role || 'instructor', phone],
-        function(err) {
-          if (err) {
-            db.run('ROLLBACK');
-            return res.status(500).json({ error: err.message });
+    // PostgreSQL: Use RETURNING id to get the inserted ID
+    db.get(
+      `INSERT INTO users (name, email, password_hash, role, phone) VALUES (?, ?, ?, ?, ?) RETURNING id`,
+      [name, email, hash, role || 'instructor', phone],
+      (err, userRow) => {
+        if (err) return res.status(500).json({ error: err.message });
+        
+        const userId = userRow.id;
+        db.get(
+          `INSERT INTO instructors (user_id, mission) VALUES (?, ?) RETURNING id`,
+          [userId, mission],
+          (err, instRow) => {
+            if (err) return res.status(500).json({ error: err.message });
+            res.json({ id: instRow.id, userId, name, email, role, mission, phone });
           }
-          
-          const userId = this.lastID;
-          db.run(
-            `INSERT INTO instructors (user_id, mission) VALUES (?, ?)`,
-            [userId, mission],
-            function(err) {
-              if (err) {
-                db.run('ROLLBACK');
-                return res.status(500).json({ error: err.message });
-              }
-              
-              db.run('COMMIT');
-              res.json({ id: this.lastID, userId, name, email, role, mission, phone });
-            }
-          );
-        }
-      );
-    });
+        );
+      }
+    );
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -957,22 +942,12 @@ app.put('/api/instructors/:id', authenticateToken, async (req, res) => {
     sql += ' WHERE id = (SELECT user_id FROM instructors WHERE id = ?)';
     params.push(id);
     
-    db.serialize(() => {
-      db.run('BEGIN TRANSACTION');
-      db.run(sql, params, function(err) {
-        if (err) {
-          db.run('ROLLBACK');
-          return res.status(500).json({ error: err.message });
-        }
-        
-        db.run('UPDATE instructors SET mission = ? WHERE id = ?', [mission, id], function(err) {
-          if (err) {
-            db.run('ROLLBACK');
-            return res.status(500).json({ error: err.message });
-          }
-          db.run('COMMIT');
-          res.json({ message: 'Instructor updated' });
-        });
+    db.run(sql, params, function(err) {
+      if (err) return res.status(500).json({ error: err.message });
+      
+      db.run('UPDATE instructors SET mission = ? WHERE id = ?', [mission, id], function(err) {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json({ message: 'Instructor updated' });
       });
     });
   } catch (error) {
@@ -989,21 +964,12 @@ app.delete('/api/instructors/:id', authenticateToken, (req, res) => {
     
     const userId = row.user_id;
     
-    db.serialize(() => {
-      db.run('BEGIN TRANSACTION');
-      // Delete sessions first to avoid FK constraints if any (though not strictly necessary if CASCADE but let's be safe)
-      db.run('DELETE FROM sessions WHERE instructor_id = ?', [id]);
+    // Delete in order to avoid FK issues
+    db.run('DELETE FROM sessions WHERE instructor_id = ?', [id], (err) => {
       db.run('DELETE FROM instructors WHERE id = ?', [id], function(err) {
-        if (err) {
-          db.run('ROLLBACK');
-          return res.status(500).json({ error: err.message });
-        }
+        if (err) return res.status(500).json({ error: err.message });
         db.run('DELETE FROM users WHERE id = ?', [userId], function(err) {
-          if (err) {
-            db.run('ROLLBACK');
-            return res.status(500).json({ error: err.message });
-          }
-          db.run('COMMIT');
+          if (err) return res.status(500).json({ error: err.message });
           res.json({ message: 'Instructor and associated user deleted' });
         });
       });

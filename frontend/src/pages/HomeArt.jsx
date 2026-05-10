@@ -74,14 +74,14 @@ const HomeArt = () => {
         zIndex: 10,
         textAlign: 'center',
         color: 'white',
-        maxWidth: '800px',
+        maxWidth: '900px',
         padding: '2rem'
       }}>
-        <h1 style={{ fontSize: '3.5rem', fontWeight: '900', marginBottom: '1.5rem', letterSpacing: '-0.05em', lineHeight: '1.1' }}>
-          {t('art_of_driving') || (document.documentElement.lang === 'ar' ? 'فن القيادة' : "L'art de la Conduite")}
+        <h1 style={{ fontSize: '3.5rem', fontWeight: '900', marginBottom: '1.5rem', letterSpacing: '-0.025em', lineHeight: '1.2' }}>
+          {t('art_of_driving')}
         </h1>
-        <p style={{ fontSize: '1.25rem', opacity: 0.8, marginBottom: '3rem', fontWeight: '500' }}>
-          {t('art_desc') || (document.documentElement.lang === 'ar' ? 'احتراف، أمان، وأناقة على الطريق' : "Professionnalisme, Sécurité et Élégance sur la route")}
+        <p style={{ fontSize: '1.4rem', opacity: 0.9, marginBottom: '3rem', fontWeight: '500', lineHeight: '1.6' }}>
+          {t('art_desc')}
         </p>
         
         <div style={{ display: 'flex', gap: '1.5rem', justifyContent: 'center', alignItems: 'center' }}>

@@ -211,7 +211,9 @@ export const translations = {
     electricity: "الكهرباء",
     internet: "الإنترنت",
     rent: "الكراء",
-    salary: "الرواتب"
+    salary: "الرواتب",
+    art_of_driving: "مدرستنا: طريقكم نحو التميز في القيادة",
+    art_desc: "نحن لا نعلمكم القيادة فحسب، بل نصنع منكم محترفين يتقنون فن التعامل مع الطريق بكل ثقة وأمان."
   },
   fr: {
     dashboard: "Tableau de bord",
@@ -425,7 +427,9 @@ export const translations = {
     electricity: "Électricité",
     internet: "Internet",
     rent: "Loyer",
-    salary: "Salaires"
+    salary: "Salaires",
+    art_of_driving: "L'Excellence au Volant",
+    art_desc: "Bien plus qu'une simple leçon, nous forgeons des conducteurs responsables et maîtres de la route."
   },
   en: {
     dashboard: "Dashboard",
@@ -612,6 +616,8 @@ export const translations = {
     repetition: "Repetition",
     once: "Once",
     daily: "Daily",
-    num_days: "Number of days"
+    num_days: "Number of days",
+    art_of_driving: "Excellence Behind the Wheel",
+    art_desc: "More than just a lesson, we forge responsible drivers who master the road."
   }
 };

@@ -26,7 +26,12 @@ const Finances = () => {
         api.get('/api/finances/summary', { params: summaryParams }),
         api.get('/api/finances/expenses', { params: expensesParams })
       ]);
-      setSummary(sumRes.data);
+      const formattedSummary = {
+        revenue: Number(sumRes.data.revenue) || 0,
+        total_expenses: Number(sumRes.data.total_expenses) || 0,
+        profit: Number(sumRes.data.profit) || 0
+      };
+      setSummary(formattedSummary);
       setExpenses(expRes.data.data || []);
       setTotalPages(expRes.data.totalPages || 1);
     } catch (error) { console.error('Failed to fetch finance data', error); }
@@ -104,7 +109,7 @@ const Finances = () => {
           </div>
           <div>
             <p style={{ color: 'var(--text-medium)', fontSize: '0.875rem', fontWeight: '600', marginBottom: '0.25rem' }}>{t('total_collected')}</p>
-            <h3 style={{ fontSize: '1.5rem', fontWeight: '800', color: 'var(--text-dark)' }}>{summary.revenue?.toLocaleString()} DT</h3>
+            <h3 style={{ fontSize: '1.5rem', fontWeight: '800', color: 'var(--text-dark)' }}>{Number(summary.revenue).toLocaleString()} DT</h3>
           </div>
         </div>
 
@@ -114,7 +119,7 @@ const Finances = () => {
           </div>
           <div>
             <p style={{ color: 'var(--text-medium)', fontSize: '0.875rem', fontWeight: '600', marginBottom: '0.25rem' }}>{t('loss')}</p>
-            <h3 style={{ fontSize: '1.5rem', fontWeight: '800', color: 'var(--text-dark)' }}>{summary.total_expenses?.toLocaleString()} DT</h3>
+            <h3 style={{ fontSize: '1.5rem', fontWeight: '800', color: 'var(--text-dark)' }}>{Number(summary.total_expenses).toLocaleString()} DT</h3>
           </div>
         </div>
 
@@ -124,7 +129,7 @@ const Finances = () => {
           </div>
           <div>
             <p style={{ color: 'var(--text-medium)', fontSize: '0.875rem', fontWeight: '600', marginBottom: '0.25rem' }}>{t('profit')}</p>
-            <h3 style={{ fontSize: '1.5rem', fontWeight: '800', color: summary.profit >= 0 ? '#10B981' : '#EF4444' }}>{summary.profit?.toLocaleString()} DT</h3>
+            <h3 style={{ fontSize: '1.5rem', fontWeight: '800', color: Number(summary.profit) >= 0 ? '#10B981' : '#EF4444' }}>{Number(summary.profit).toLocaleString()} DT</h3>
           </div>
         </div>
       </div>
@@ -155,7 +160,7 @@ const Finances = () => {
                   <td style={{ fontWeight: '600' }}>{new Date(ex.date).toLocaleDateString()}</td>
                   <td><span className="badge badge-info">{ex.category}</span></td>
                   <td>{ex.description}</td>
-                  <td style={{ fontWeight: '800', color: '#EF4444' }}>{ex.amount?.toLocaleString()} DT</td>
+                  <td style={{ fontWeight: '800', color: '#EF4444' }}>{Number(ex.amount).toLocaleString()} DT</td>
                   <td>
                     <span className={`badge ${ex.source === 'Fleet' ? 'badge-warning' : 'badge-info'}`}>
                       {ex.source === 'Fleet' ? t('fleet_source') : t('general_source')}

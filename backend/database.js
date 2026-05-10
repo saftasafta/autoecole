@@ -1,10 +1,23 @@
 const { Pool } = require('pg');
 const bcrypt = require('bcrypt');
+const dns = require('node:dns');
 require('dotenv').config();
+
+// Bypass SSL certificate validation for local development
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
+
+// Force IPv4 first to avoid connection issues on some networks
+if (dns.setDefaultResultOrder) {
+  dns.setDefaultResultOrder('ipv4first');
+}
 
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
-  ssl: true
+  ssl: {
+    rejectUnauthorized: false
+  },
+  // Ensure we don't hang on connection errors
+  connectionTimeoutMillis: 5000
 });
 
 // Helper to convert SQLite "?" syntax to PostgreSQL "$1, $2" syntax

@@ -111,7 +111,7 @@ app.get('/api/dashboard', authenticateToken, (req, res) => {
             stats.sessionsParking = row.count || 0;
             db.get('SELECT SUM(amount) as total FROM payments', (err, row) => {
               stats.revenue = row.total || 0;
-              db.get('SELECT COUNT(*) as count FROM vehicles WHERE status = "active"', (err, row) => {
+              db.get("SELECT COUNT(*) as count FROM vehicles WHERE status = 'active'", (err, row) => {
                 stats.vehicles = row.count;
                 db.all(`
                   SELECT 'session' as type, s.start_time as date, st.name as student_name, s.type as detail, s.status
@@ -745,10 +745,10 @@ app.get('/api/finances/summary', authenticateToken, (req, res) => {
   const params = [];
 
   if (month && year) {
-    filter = ` WHERE strftime('%m', date) = ? AND strftime('%Y', date) = ? `;
+    filter = ` WHERE TO_CHAR(date, 'MM') = ? AND TO_CHAR(date, 'YYYY') = ? `;
     params.push(month.padStart(2, '0'), year);
   } else if (year) {
-    filter = ` WHERE strftime('%Y', date) = ? `;
+    filter = ` WHERE TO_CHAR(date, 'YYYY') = ? `;
     params.push(year);
   }
 
@@ -788,10 +788,10 @@ app.get('/api/finances/expenses', authenticateToken, (req, res) => {
   const params = [];
 
   if (month && year) {
-    filter += ` AND strftime('%m', date) = ? AND strftime('%Y', date) = ? `;
+    filter += ` AND TO_CHAR(date, 'MM') = ? AND TO_CHAR(date, 'YYYY') = ? `;
     params.push(month.padStart(2, '0'), year);
   } else if (year) {
-    filter += ` AND strftime('%Y', date) = ? `;
+    filter += ` AND TO_CHAR(date, 'YYYY') = ? `;
     params.push(year);
   }
 
@@ -843,7 +843,7 @@ app.post('/api/finances/expenses', authenticateToken, (req, res) => {
   const numAmount = parseFloat(amount);
   if (isNaN(numAmount)) return res.status(400).json({ error: 'Invalid amount' });
 
-  db.run('INSERT INTO general_expenses (amount, category, `date`, description) VALUES (?, ?, ?, ?)',
+  db.run('INSERT INTO general_expenses (amount, category, date, description) VALUES (?, ?, ?, ?)',
     [numAmount, category, date, description], function(err) {
       if (err) {
         console.error('DATABASE ERROR (POST general_expenses):', err.message);

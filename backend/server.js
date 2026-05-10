@@ -187,14 +187,23 @@ app.get('/api/students', authenticateToken, (req, res) => {
         if (err) return res.status(500).json({ error: err.message });
         
         const mapped = rows.map(student => {
-          const codeHourCost = student.total_code_hours * tariffs.code_hour_price;
-          const drivingCost = student.total_driving_hours * tariffs.driving_hour_price;
-          const parkingCost = student.total_parking_hours * tariffs.driving_hour_price;
-          const examCost = (student.count_exam_code * tariffs.exam_code_price) +
-                           (student.count_exam_driving * tariffs.exam_driving_price) +
-                           (student.count_exam_parking * tariffs.exam_parking_price);
+          const t = {
+            code: Number(tariffs.code_hour_price || 0),
+            driving: Number(tariffs.driving_hour_price || 0),
+            examCode: Number(tariffs.exam_code_price || 0),
+            examDriving: Number(tariffs.exam_driving_price || 0),
+            examParking: Number(tariffs.exam_parking_price || 0)
+          };
+          
+          const codeHourCost = Number(student.total_code_hours || 0) * t.code;
+          const drivingCost = Number(student.total_driving_hours || 0) * t.driving;
+          const parkingCost = Number(student.total_parking_hours || 0) * t.driving;
+          const examCost = (Number(student.count_exam_code || 0) * t.examCode) +
+                           (Number(student.count_exam_driving || 0) * t.examDriving) +
+                           (Number(student.count_exam_parking || 0) * t.examParking);
+          
           const totalCost = codeHourCost + drivingCost + parkingCost + examCost;
-          const remaining = totalCost - student.total_paid;
+          const remaining = totalCost - Number(student.total_paid || 0);
           
           return {
             ...student,

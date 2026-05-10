@@ -114,7 +114,7 @@ app.get('/api/dashboard', authenticateToken, (req, res) => {
           db.get("SELECT COUNT(*) as count FROM sessions WHERE type = 'Parking' AND status != 'cancelled'", (err, row) => {
             stats.sessionsParking = row.count || 0;
             db.get('SELECT SUM(amount) as total FROM payments', (err, row) => {
-              stats.revenue = row.total || 0;
+              stats.revenue = Number(row.total || 0);
               db.get("SELECT COUNT(*) as count FROM vehicles WHERE status = 'active'", (err, row) => {
                 stats.vehicles = row.count;
                 db.all(`
@@ -745,9 +745,9 @@ app.get('/api/finances/summary', authenticateToken, (req, res) => {
       return res.status(500).json({ error: err.message });
     }
     const results = {
-      revenue: row.revenue || 0,
-      vehicle_expenses: row.vehicle_expenses || 0,
-      general_expenses: row.general_expenses || 0
+      revenue: Number(row.revenue || 0),
+      vehicle_expenses: Number(row.vehicle_expenses || 0),
+      general_expenses: Number(row.general_expenses || 0)
     };
     results.total_expenses = results.vehicle_expenses + results.general_expenses;
     results.profit = results.revenue - results.total_expenses;

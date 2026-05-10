@@ -495,24 +495,31 @@ const Fleet = () => {
                       <table className="data-table">
                         <thead><tr><th>{t('date')}</th><th>{t('type') || 'النوع'}</th><th>{t('description')}</th><th>{t('amount')}</th><th>{t('actions')}</th></tr></thead>
                         <tbody>
-                          {expenses.filter(ex => ['Repair', 'Insurance', 'Insurance'].includes(ex.category) || ex.description.includes('زيت') || ex.description.includes('تأمين') || ex.description.includes('فحص')).slice(0, 5).map(ex => (
+                          {expenses.filter(ex => ['Repair', 'Insurance'].includes(ex.category) || ex.description?.includes('زيت') || ex.description?.includes('تأمين') || ex.description?.includes('فحص')).slice(0, 5).map(ex => (
                             <tr key={ex.id}>
                               <td>{new Date(ex.date).toLocaleDateString()} {new Date(ex.date).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</td>
                               <td>{ex.category === 'Insurance' ? t('insurance') : t('maintenance')}</td>
                               <td style={{ fontWeight:'600' }}>{ex.description}</td>
                               <td>{ex.amount} DT</td>
                               <td>
-                                <div style={{ display:'flex', gap:'0.5rem' }}>
-                                  <button className="btn" style={{ padding:'0.4rem', color:'var(--primary-blue)', background:'transparent' }} onClick={() => {
-                                    const amt = window.prompt(t('new_amount') || "New Amount:", ex.amount);
-                                    if (amt) api.put(`/api/vehicles/any/expenses/${ex.id}`, { ...ex, amount: amt }).then(() => fetchVehicleDetails(selectedVehicle.id));
-                                  }}><FiEdit size={14}/></button>
-                                  <button className="btn" style={{ padding:'0.4rem', color:'#EF4444', background:'transparent' }} onClick={() => handleDeleteExpense(ex.id, 'Fleet')}><FiTrash2 size={14}/></button>
+                                <div style={{ display:'flex', gap:'0.4rem' }}>
+                                  <button className="btn btn-secondary" style={{ padding:'0.35rem 0.6rem' }} onClick={() => {
+                                    const newDesc = window.prompt(t('description') + ':', ex.description || '');
+                                    const newAmt  = window.prompt(t('amount') + ':', ex.amount);
+                                    if (newAmt !== null) {
+                                      api.put(`/api/vehicles/any/expenses/${ex.id}`, { ...ex, description: newDesc ?? ex.description, amount: newAmt })
+                                        .then(() => fetchVehicleDetails(selectedVehicle.id));
+                                    }
+                                  }}><FiEdit size={13}/></button>
+                                  <button className="btn" style={{ padding:'0.35rem 0.6rem', backgroundColor:'#FEE2E2', color:'#EF4444', border:'none' }}
+                                    onClick={() => handleDeleteExpense(ex.id, 'Fleet')}>
+                                    <FiTrash2 size={13}/>
+                                  </button>
                                 </div>
                               </td>
                             </tr>
                           ))}
-                          {expenses.filter(ex => ex.description.includes('زيت') || ex.description.includes('تأمين') || ex.description.includes('فحص')).length === 0 && (
+                          {expenses.filter(ex => ex.description?.includes('زيت') || ex.description?.includes('تأمين') || ex.description?.includes('فحص')).length === 0 && (
                             <tr><td colSpan="5" style={{ textAlign:'center', color:'var(--text-medium)', padding:'2rem' }}>{t('no_history') || 'لا يوجد سجل تأكيدات بعد'}</td></tr>
                           )}
                         </tbody>

@@ -247,7 +247,7 @@ const Sessions = () => {
                   <td style={{ fontWeight: '700' }}>{session.student_name}</td>
                   <td>{session.student_cin || 'N/A'}</td>
                   <td>{session.type}</td>
-                  <td>{session.duration_hours} h</td>
+                  <td>{Number(session.duration_hours)} h</td>
                   <td>
                     <select 
                       className={`badge ${session.status === 'completed' ? 'badge-success' : session.status === 'cancelled' ? 'badge-error' : 'badge-info'}`}
@@ -337,7 +337,7 @@ const Sessions = () => {
                       <td style={{ fontWeight: '700' }}>{session.student_name}</td>
                       <td>{session.student_cin || 'N/A'}</td>
                       <td>{session.type}</td>
-                      <td>{session.duration_hours} h</td>
+                      <td>{Number(session.duration_hours)} h</td>
                       <td>
                         <select 
                           className={`badge ${session.status === 'completed' ? 'badge-success' : session.status === 'cancelled' ? 'badge-error' : 'badge-info'}`}

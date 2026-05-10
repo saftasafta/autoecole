@@ -74,7 +74,7 @@ const StudentModal = ({ studentId, onClose }) => {
                     {(student.billing_details.conduite.hours > 0 || student.billing_details.conduite.paid > 0) && (
                       <tr style={{ borderBottom: '1px solid #F3F4F6' }}>
                         <td style={{ padding: '0.75rem 0' }}>
-                          {t('lessons')} Conduite ({student.billing_details.conduite.count || 0} {lang === 'ar' ? 'حصة' : 'sessions'} - {student.billing_details.conduite.hours} h)
+                          {t('lessons')} Conduite ({student.billing_details.conduite.count || 0} {lang === 'ar' ? 'حصة' : 'sessions'} - {Number(student.billing_details.conduite.hours)} h)
                         </td>
                         <td style={{ padding: '0.75rem 0', textAlign: lang === 'ar' ? 'left' : 'right' }}>{student.billing_details.conduite.cost}</td>
                         <td style={{ padding: '0.75rem 0', textAlign: lang === 'ar' ? 'left' : 'right', color: '#10B981' }}>{student.billing_details.conduite.paid}</td>
@@ -87,7 +87,7 @@ const StudentModal = ({ studentId, onClose }) => {
                     {(student.billing_details.parking.hours > 0 || student.billing_details.parking.paid > 0) && (
                       <tr style={{ borderBottom: '1px solid #F3F4F6' }}>
                         <td style={{ padding: '0.75rem 0' }}>
-                          {t('lessons')} Parking ({student.billing_details.parking.count || 0} {lang === 'ar' ? 'حصة' : 'sessions'} - {student.billing_details.parking.hours} h)
+                          {t('lessons')} Parking ({student.billing_details.parking.count || 0} {lang === 'ar' ? 'حصة' : 'sessions'} - {Number(student.billing_details.parking.hours)} h)
                         </td>
                         <td style={{ padding: '0.75rem 0', textAlign: lang === 'ar' ? 'left' : 'right' }}>{student.billing_details.parking.cost}</td>
                         <td style={{ padding: '0.75rem 0', textAlign: lang === 'ar' ? 'left' : 'right', color: '#10B981' }}>{student.billing_details.parking.paid}</td>
@@ -133,7 +133,7 @@ const StudentModal = ({ studentId, onClose }) => {
                     {(student.billing_details.code_hours.hours > 0 || student.billing_details.code_hours.paid > 0) && (
                       <tr style={{ borderBottom: '1px solid #F3F4F6' }}>
                         <td style={{ padding: '0.75rem 0' }}>
-                          {t('lessons')} Code ({student.billing_details.code_hours.count || 0} {lang === 'ar' ? 'حصة' : 'sessions'} - {student.billing_details.code_hours.hours} h)
+                          {t('lessons')} Code ({student.billing_details.code_hours.count || 0} {lang === 'ar' ? 'حصة' : 'sessions'} - {Number(student.billing_details.code_hours.hours)} h)
                         </td>
                         <td style={{ padding: '0.75rem 0', textAlign: lang === 'ar' ? 'left' : 'right' }}>{student.billing_details.code_hours.cost}</td>
                         <td style={{ padding: '0.75rem 0', textAlign: lang === 'ar' ? 'left' : 'right', color: '#10B981' }}>{student.billing_details.code_hours.paid}</td>
@@ -198,7 +198,7 @@ const StudentModal = ({ studentId, onClose }) => {
                         return (
                           <li key={session.id} style={{ padding: '0.75rem', borderBottom: '1px solid #E5E7EB' }}>
                             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.25rem' }}>
-                              <span style={{ fontWeight: '500' }}>{typeTranslation} - {sessionLabel} {session.sessionNumber} ({session.duration_hours}h)</span>
+                              <span style={{ fontWeight: '500' }}>{typeTranslation} - {sessionLabel} {session.sessionNumber} ({Number(session.duration_hours)}h)</span>
                               <span className={`badge ${session.status === 'completed' ? 'badge-success' : session.status === 'cancelled' ? 'badge-error' : 'badge-info'}`}>
                                 {t(session.status)}
                               </span>

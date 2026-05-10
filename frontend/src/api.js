@@ -1,8 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  // Use environment variable from Vercel/Render, otherwise use the cloud API link
-  baseURL: import.meta.env.VITE_API_URL || 'https://autoecole-backend.onrender.com',
+  baseURL: 'https://autoecole-backend.onrender.com',
 });
 
 // Add a request interceptor to include the token in all requests

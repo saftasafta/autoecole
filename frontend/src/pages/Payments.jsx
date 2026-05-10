@@ -154,7 +154,7 @@ const Payments = () => {
           <div style={{ display: 'flex', gap: '2rem' }}>
              <div style={{ textAlign: 'right' }}>
                 <div style={{ fontSize: '0.75rem', color: 'var(--text-medium)', fontWeight: '600', textTransform: 'uppercase' }}>{t('total_collected')}</div>
-                <div style={{ fontSize: '1.25rem', fontWeight: '800', color: '#10B981' }}>{payments.reduce((acc, p) => acc + p.amount, 0).toLocaleString()} DT</div>
+                <div style={{ fontSize: '1.25rem', fontWeight: '800', color: '#10B981' }}>{payments.reduce((acc, p) => acc + (Number(p.amount) || 0), 0).toLocaleString()} DT</div>
              </div>
           </div>
         </div>
@@ -180,7 +180,7 @@ const Payments = () => {
                     </div>
                   </td>
                   <td><span className="badge badge-info">{payment.payment_type || t('other')}</span></td>
-                  <td style={{ fontWeight: '800', color: '#10B981' }}>{payment.amount.toLocaleString()} DT</td>
+                  <td style={{ fontWeight: '800', color: '#10B981' }}>{Number(payment.amount).toLocaleString()} DT</td>
                   <td>{new Date(payment.payment_date).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' })}</td>
                   <td>
                     <div style={{ display: 'flex', gap: '0.5rem' }}>

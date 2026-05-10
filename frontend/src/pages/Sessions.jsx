@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import api from '../api';
-import { FiPlus, FiSearch, FiEdit, FiTrash2, FiEye } from 'react-icons/fi';
+import { FiPlus, FiSearch, FiEdit, FiTrash2, FiEye, FiXCircle } from 'react-icons/fi';
 import { useLanguage } from '../LanguageContext';
 import Pagination from '../components/Pagination';
 import StudentModal from '../components/StudentModal';
@@ -38,6 +38,7 @@ const Sessions = () => {
   const [studentSearch, setStudentSearch] = useState('');
   const [showStudentDropdown, setShowStudentDropdown] = useState(false);
   const [viewStudentId, setViewStudentId] = useState(null);
+  const [clearSessionsId, setClearSessionsId] = useState(null);
 
   const fetchTodaySessions = useCallback(async () => {
     try {
@@ -169,7 +170,17 @@ const Sessions = () => {
     }
   };
 
-
+  const handleClearSessions = async (type) => {
+    if (!clearSessionsId || clearSessionsId === 'new') return alert(t('select_student'));
+    if (!window.confirm(t('confirm_delete'))) return;
+    try {
+      await api.delete(`/api/student-maintenance/${clearSessionsId}/clear-sessions?type=${type}`);
+      setClearSessionsId(null);
+      setStudentSearch('');
+      fetchTodaySessions();
+      if (showAllModal) fetchAllSessions();
+    } catch (error) { alert(`Erreur: ${error.response?.data?.error || error.message}`); }
+  };
 
 
   const filteredTodaySessions = sessions.filter(s => {
@@ -191,7 +202,9 @@ const Sessions = () => {
           <p style={{ color: 'var(--text-medium)', fontSize: '1rem' }}>{t('sessions_desc')}</p>
         </div>
         <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-
+          <button className="btn" style={{ backgroundColor: '#F3E8FF', color: '#6B21A8' }} onClick={() => setClearSessionsId('new')}>
+            <FiXCircle /> {t('clear_sessions')}
+          </button>
           <button className="btn btn-secondary" onClick={openAllSessions}>
             <FiSearch /> {t('all_sessions')}
           </button>
@@ -469,7 +482,38 @@ const Sessions = () => {
         </div>
       )}
 
+      {clearSessionsId && (
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 2000 }}>
+          <div className="card" style={{ width: '450px' }}>
+            <h2 style={{ fontSize: '1.5rem', fontWeight: '800', marginBottom: '1.5rem' }}>{t('clear_sessions')}</h2>
+            
+             <div style={{ marginBottom: '1.5rem', position: 'relative' }}>
+                <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '600', marginBottom: '0.5rem' }}>{t('select_student')}</label>
+                <input type="text" className="input-field" placeholder={t('search')} value={studentSearch} onChange={e => { setStudentSearch(e.target.value); setShowStudentDropdown(true); }} />
+                {showStudentDropdown && studentSearch.length > 0 && (
+                  <div style={{ position: 'absolute', top: '100%', left: 0, right: 0, background: 'white', border: '1px solid #E2E8F0', borderRadius: '12px', zIndex: 110, marginTop: '0.5rem', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)' }}>
+                    {students.map(s => (
+                      <div key={s.id} style={{ padding: '0.8rem 1rem', cursor: 'pointer', borderBottom: '1px solid #F1F5F9' }} onClick={() => { setClearSessionsId(s.id); setStudentSearch(s.name); setShowStudentDropdown(false); }}>
+                        <div style={{ fontWeight: '600' }}>{s.name}</div>
+                        <div style={{ fontSize: '0.75rem', color: 'var(--text-medium)' }}>CIN: {s.cin}</div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
 
+            <p style={{ marginBottom: '1rem', color: 'var(--text-medium)', fontSize: '0.9rem' }}>{t('clear_sessions_desc')}</p>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
+              <button className="btn" style={{ justifyContent: 'center', backgroundColor: '#F3F4F6' }} onClick={() => handleClearSessions('all')}>{t('delete_all')}</button>
+              <button className="btn" style={{ justifyContent: 'center', backgroundColor: '#EFF6FF' }} onClick={() => handleClearSessions('Code')}>{t('delete_code')}</button>
+              <button className="btn" style={{ justifyContent: 'center', backgroundColor: '#F5F3FF' }} onClick={() => handleClearSessions('Conduite')}>{t('delete_conduite')}</button>
+              <button className="btn" style={{ justifyContent: 'center', backgroundColor: '#FFF7ED' }} onClick={() => handleClearSessions('Parking')}>{t('delete_parking')}</button>
+            </div>
+            <hr style={{ margin: '1.5rem 0', borderColor: '#F1F5F9' }} />
+            <button className="btn w-full" style={{ justifyContent: 'center' }} onClick={() => { setClearSessionsId(null); setStudentSearch(''); }}>{t('cancel')}</button>
+          </div>
+        </div>
+      )}
 
       {viewStudentId && <StudentModal studentId={viewStudentId} onClose={() => setViewStudentId(null)} />}
     </div>

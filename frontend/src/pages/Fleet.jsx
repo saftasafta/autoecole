@@ -85,7 +85,7 @@ const Fleet = () => {
     try {
       await Promise.all([
         api.put(`/api/vehicles/${vehicle.id}`, { ...vehicle, insurance_expiry: newDate }),
-        amount > 0 ? api.post(`/api/vehicles/${vehicle.id}/expenses`, { amount, category: 'Repair', date: new Date().toISOString().split('T')[0], description: description || t('insurance') }) : Promise.resolve()
+        amount > 0 ? api.post(`/api/vehicles/${vehicle.id}/expenses`, { amount, category: 'Insurance', date: new Date().toISOString().split('T')[0], description: description || 'تأمين' }) : Promise.resolve()
       ]);
       fetchVehicles(); refreshNotifications();
       setConfirmAction(null);
@@ -96,7 +96,7 @@ const Fleet = () => {
     try {
       await Promise.all([
         api.put(`/api/vehicles/${vehicle.id}`, { ...vehicle, last_oil_change_km: vehicle.mileage, status: 'active' }),
-        amount > 0 ? api.post(`/api/vehicles/${vehicle.id}/expenses`, { amount, category: 'Repair', date: new Date().toISOString().split('T')[0], description: description || t('oil_change') }) : Promise.resolve()
+        amount > 0 ? api.post(`/api/vehicles/${vehicle.id}/expenses`, { amount, category: 'Repair', date: new Date().toISOString().split('T')[0], description: description || 'تغيير زيت' }) : Promise.resolve()
       ]);
       fetchVehicles(); refreshNotifications();
       setConfirmAction(null);
@@ -109,7 +109,7 @@ const Fleet = () => {
     try {
       await Promise.all([
         api.put(`/api/vehicles/${vehicle.id}`, { ...vehicle, tech_inspection_expiry: newDate }),
-        amount > 0 ? api.post(`/api/vehicles/${vehicle.id}/expenses`, { amount, category: 'Repair', date: new Date().toISOString().split('T')[0], description: description || t('tech_inspection') }) : Promise.resolve()
+        amount > 0 ? api.post(`/api/vehicles/${vehicle.id}/expenses`, { amount, category: 'Repair', date: new Date().toISOString().split('T')[0], description: description || 'فحص فني' }) : Promise.resolve()
       ]);
       fetchVehicles(); refreshNotifications();
       setConfirmAction(null);
@@ -326,7 +326,7 @@ const Fleet = () => {
                 </div>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '0.75rem', marginBottom: '1.5rem' }}>
                   <div><label className="label">{t('amount')}</label><input name="amount" type="number" step="0.01" className="input-field" placeholder="0.00" /></div>
-                  <div><label className="label">{t('description')}</label><input name="description" type="text" className="input-field" placeholder={confirmAction.type === 'insurance' ? t('insurance') : t('tech_inspection')} /></div>
+                  <div><label className="label">{t('description')}</label><input name="description" type="text" className="input-field" defaultValue={confirmAction.type === 'insurance' ? 'تأمين' : 'فحص فني'} /></div>
                 </div>
                 <div style={{ display:'flex', gap:'1rem', justifyContent:'flex-end' }}>
                   <button type="button" className="btn" onClick={() => setConfirmAction(null)}>{t('cancel')}</button>
@@ -345,7 +345,7 @@ const Fleet = () => {
                 </div>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '0.75rem', marginBottom: '1.5rem' }}>
                   <div><label className="label">{t('amount')}</label><input name="amount" type="number" step="0.01" className="input-field" placeholder="0.00" /></div>
-                  <div><label className="label">{t('description')}</label><input name="description" type="text" className="input-field" placeholder={t('oil_change')} /></div>
+                  <div><label className="label">{t('description')}</label><input name="description" type="text" className="input-field" defaultValue="تغيير زيت" /></div>
                 </div>
                 <div style={{ display:'flex', gap:'1rem', justifyContent:'flex-end' }}>
                   <button type="button" className="btn" onClick={() => setConfirmAction(null)}>{t('cancel')}</button>
@@ -494,8 +494,8 @@ const Fleet = () => {
                   </form>
                   <div className="data-table-container">
                     <table className="data-table">
-                      <thead><tr><th>{t('date')}</th><th>{t('category')}</th><th>{t('amount')}</th></tr></thead>
-                      <tbody>{expenses.map(ex => (<tr key={ex.id}><td>{new Date(ex.date).toLocaleDateString()}</td><td>{ex.category}</td><td style={{ fontWeight:'800' }}>{ex.amount} DT</td></tr>))}</tbody>
+                      <thead><tr><th>{t('date')}</th><th>{t('category')}</th><th>{t('description')}</th><th>{t('amount')}</th></tr></thead>
+                      <tbody>{expenses.map(ex => (<tr key={ex.id}><td>{new Date(ex.date).toLocaleDateString()}</td><td>{ex.category}</td><td>{ex.description}</td><td style={{ fontWeight:'800' }}>{ex.amount} DT</td></tr>))}</tbody>
                     </table>
                   </div>
                 </div>

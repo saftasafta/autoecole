@@ -361,57 +361,14 @@ app.get('/api/sessions', authenticateToken, (req, res) => {
 app.post('/api/sessions', authenticateToken, (req, res) => {
   const { student_id, instructor_id, vehicle_id, type, duration_hours, start_time, status, result } = req.body;
 
-  // If it's an exam type, apply day-based validation rules
-  if (type && type.startsWith('Examen') && student_id && start_time) {
-    const examDate = start_time.split('T')[0]; // Extract YYYY-MM-DD
-
-    db.all(
-      `SELECT type FROM sessions 
-       WHERE student_id = ? 
-         AND type LIKE 'Examen%' 
-         AND status != 'cancelled'
-         AND sessions.start_time::date = ?::date`,
-      [student_id, examDate],
-      (err, existingExams) => {
-        if (err) return res.status(500).json({ error: err.message });
-
-        // Rule 1: Cannot register more than 3 exams in one day
-        if (existingExams.length >= 3) {
-          return res.status(400).json({
-            error: `L'élève a déjà 3 examens enregistrés pour cette journée. Il n'est pas possible d'en ajouter davantage.`
-          });
-        }
-
-        // Rule 2: Cannot register the same exam type twice on the same day
-        const duplicate = existingExams.find(e => e.type === type);
-        if (duplicate) {
-          return res.status(400).json({
-            error: `L'élève est déjà inscrit à un "${type}" pour cette journée.`
-          });
-        }
-
-        // All checks passed — insert the session
-        db.run(
-          `INSERT INTO sessions (student_id, instructor_id, vehicle_id, type, duration_hours, start_time, status, result) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
-          [student_id, instructor_id, vehicle_id, type, duration_hours || 1, start_time, status || 'scheduled', result],
-          function(err) {
-            if (err) return res.status(500).json({ error: err.message });
-            res.json({ id: this.lastID, ...req.body });
-          }
-        );
-      }
-    );
-  } else {
-    // Not an exam — insert directly
-    db.run(
-      `INSERT INTO sessions (student_id, instructor_id, vehicle_id, type, duration_hours, start_time, status, result) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
-      [student_id, instructor_id, vehicle_id, type, duration_hours || 1, start_time, status || 'scheduled', result],
-      function(err) {
-        if (err) return res.status(500).json({ error: err.message });
-        res.json({ id: this.lastID, ...req.body });
-      }
-    );
-  }
+  db.run(
+    `INSERT INTO sessions (student_id, instructor_id, vehicle_id, type, duration_hours, start_time, status, result) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+    [student_id, instructor_id, vehicle_id, type, duration_hours || 1, start_time, status || 'scheduled', result],
+    function(err) {
+      if (err) return res.status(500).json({ error: err.message });
+      res.json({ id: this.lastID, ...req.body });
+    }
+  );
 });
 
 app.put('/api/sessions/:id', authenticateToken, (req, res) => {

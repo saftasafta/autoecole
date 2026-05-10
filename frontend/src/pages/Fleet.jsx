@@ -282,30 +282,7 @@ const Fleet = () => {
                 </div>
               )}
 
-              {/* Action Buttons */}
-              <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr 1fr', gap:'0.5rem' }} onClick={e => e.stopPropagation()}>
-                <button
-                  className="btn"
-                  style={{ backgroundColor: insWarn || insExpired ? '#DBEAFE' : '#F1F5F9', color: insWarn || insExpired ? '#1E40AF' : '#64748B', fontSize:'0.7rem', fontWeight:'700', padding:'0.4rem' }}
-                  onClick={() => setConfirmAction({ type:'insurance', vehicle: v })}
-                >
-                  <FiShield size={12}/> {t('insurance')}
-                </button>
-                <button
-                  className="btn"
-                  style={{ backgroundColor: techWarn || techExpired ? '#E0F2FE' : '#F1F5F9', color: techWarn || techExpired ? '#0369A1' : '#64748B', fontSize:'0.7rem', fontWeight:'700', padding:'0.4rem' }}
-                  onClick={() => setConfirmAction({ type:'tech', vehicle: v })}
-                >
-                  <FiActivity size={12}/> {t('tech_inspection')}
-                </button>
-                <button
-                  className="btn"
-                  style={{ backgroundColor: oilWarn || oilDanger ? '#FEE2E2' : '#F1F5F9', color: oilWarn || oilDanger ? '#991B1B' : '#64748B', fontSize:'0.7rem', fontWeight:'700', padding:'0.4rem' }}
-                  onClick={() => setConfirmAction({ type:'oil', vehicle: v })}
-                >
-                  <FiTool size={12}/> {t('oil_change')}
-                </button>
-              </div>
+
             </div>
           );
         })}

@@ -4,9 +4,7 @@ require('dotenv').config();
 
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
-  ssl: {
-    rejectUnauthorized: false // Required for Supabase/Render connections
-  }
+  ssl: true
 });
 
 // Helper to convert SQLite "?" syntax to PostgreSQL "$1, $2" syntax

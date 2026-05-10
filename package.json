@@ -1,0 +1,9 @@
+{
+  "name": "auto-ecole-management",
+  "version": "1.0.0",
+  "scripts": {
+    "install-all": "npm install && cd frontend && npm install && cd ../backend && npm install",
+    "build-frontend": "cd frontend && npm run build",
+    "start-backend": "cd backend && node server.js"
+  }
+}

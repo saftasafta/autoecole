@@ -64,7 +64,7 @@ const Dashboard = () => {
         <StatCard title={t('code')} value={stats.sessionsCode} icon={<FiClock size={28} />} color="#F59E0B" />
         <StatCard title={t('conduite')} value={stats.sessionsDriving} icon={<FiCalendar size={28} />} color="#10B981" />
         <StatCard title={t('parking')} value={stats.sessionsParking} icon={<FiTruck size={28} />} color="#6366F1" />
-        <StatCard title={t('revenue')} value={`${stats.revenue} DT`} icon={<FiDollarSign size={28} />} color="#EC4899" />
+        <StatCard title={t('revenue')} value={`${Number(stats.revenue).toLocaleString()} DT`} icon={<FiDollarSign size={28} />} color="#EC4899" />
         <StatCard title={t('fleet')} value={stats.vehicles} icon={<FiTruck size={28} />} color="#8B5CF6" />
       </div>
 

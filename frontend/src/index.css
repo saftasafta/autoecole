@@ -109,7 +109,8 @@ body {
 
 /* Modern Table */
 .data-table-container {
-  overflow: hidden;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
   background: white;
   border-radius: var(--border-radius);
   border: 1px solid #F1F5F9;
@@ -187,3 +188,33 @@ body {
   background: #94A3B8;
 }
 
+
+/* ===== Mobile Responsive ===== */
+@media (max-width: 768px) {
+
+  .data-table th {
+    padding: 0.6rem 0.75rem;
+    font-size: 0.65rem;
+    white-space: nowrap;
+  }
+
+  .data-table td {
+    padding: 0.65rem 0.75rem;
+    font-size: 0.78rem;
+    white-space: nowrap;
+  }
+
+  .badge {
+    padding: 0.2rem 0.5rem;
+    font-size: 0.65rem;
+  }
+
+  .btn {
+    padding: 0.55rem 0.9rem;
+    font-size: 0.8rem;
+  }
+
+  .card {
+    padding: 1rem;
+  }
+}

@@ -4,7 +4,7 @@ import { FiHome, FiUsers, FiCalendar, FiCreditCard, FiLogOut, FiTag, FiClipboard
 import { useLanguage } from '../LanguageContext';
 import { useNotifications } from '../NotificationsContext';
 
-const Sidebar = () => {
+const Sidebar = ({ isOpen, toggleSidebar }) => {
   const navigate = useNavigate();
   const { lang, setLang, t } = useLanguage();
   const { notifications, dismissNotification } = useNotifications();
@@ -34,21 +34,28 @@ const Sidebar = () => {
   return (
     <>
       <div style={{
-        width: '260px',
+        width: window.innerWidth < 768 ? '280px' : '260px',
         backgroundColor: 'var(--primary-blue)',
         color: 'white',
         display: 'flex',
         flexDirection: 'column',
         boxShadow: lang === 'ar' ? '-4px 0 10px rgba(0,0,0,0.1)' : '4px 0 10px rgba(0,0,0,0.1)',
-        zIndex: 10,
-        transition: 'var(--transition)'
+        zIndex: 2000,
+        transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+        position: window.innerWidth < 768 ? 'fixed' : 'relative',
+        height: '100vh',
+        left: window.innerWidth < 768 ? (isOpen ? '0' : '-280px') : '0',
+        visibility: window.innerWidth < 768 && !isOpen ? 'hidden' : 'visible'
       }}>
         {/* Logo */}
         <div style={{ padding: '2rem 1.5rem', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-          <div style={{ width: '32px', height: '32px', backgroundColor: 'var(--accent-yellow)', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <span style={{ color: 'var(--primary-blue)', fontWeight: 'bold', fontSize: '1.2rem' }}>A</span>
+          <div style={{ width: '40px', height: '40px', backgroundColor: 'white', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow:'hidden', padding:'2px' }}>
+            <img src="/pwa-192x192.png" alt="Logo" style={{ width:'100%', height:'100%', objectFit:'contain' }} />
           </div>
-          <h2 style={{ fontSize: '1.25rem', fontWeight: 'bold', letterSpacing: '0.5px', flex: 1 }}>Auto-École</h2>
+          <h2 style={{ fontSize: '1.25rem', fontWeight: 'bold', letterSpacing: '0.5px', flex: 1, whiteSpace:'nowrap' }}>Auto-École</h2>
+          {window.innerWidth < 768 && (
+            <button onClick={toggleSidebar} style={{ background:'transparent', border:'none', color:'white', cursor:'pointer' }}><FiX size={24}/></button>
+          )}
 
           {/* Notification Bell */}
           <button
@@ -296,6 +303,10 @@ const Sidebar = () => {
             )}
           </div>
         </>
+      )}
+      {/* Backdrop for mobile */}
+      {window.innerWidth < 768 && isOpen && (
+        <div onClick={toggleSidebar} style={{ position:'fixed', top:0, left:0, right:0, bottom:0, backgroundColor:'rgba(0,0,0,0.5)', zIndex:1999 }} />
       )}
     </>
   );

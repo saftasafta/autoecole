@@ -1,15 +1,18 @@
 import { Outlet } from 'react-router-dom';
 import Sidebar from './Sidebar';
-import { FiUser, FiX } from 'react-icons/fi';
+import { FiUser, FiX, FiMenu } from 'react-icons/fi';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { useState } from 'react';
 
 const Layout = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const isHomeArt = location.pathname === '/home-art';
+
   return (
     <div style={{ display: 'flex', height: '100vh', overflow: 'hidden' }}>
-      <Sidebar />
+      <Sidebar isOpen={isSidebarOpen} toggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)} />
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
         {/* Navbar */}
         <header style={{
@@ -21,7 +24,12 @@ const Layout = () => {
           justifyContent: 'space-between',
           padding: '0 2rem'
         }}>
-          <div style={{ display: 'flex', alignItems: 'center' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+            {window.innerWidth < 768 && (
+              <button onClick={() => setIsSidebarOpen(true)} style={{ background:'transparent', border:'none', color:'var(--text-dark)', cursor:'pointer', display:'flex', alignItems:'center' }}>
+                <FiMenu size={24} />
+              </button>
+            )}
             <h2 style={{ fontSize: '1rem', fontWeight: '700', color: 'var(--text-dark)' }}>Auto-Ecole</h2>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>

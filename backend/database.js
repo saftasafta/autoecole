@@ -29,22 +29,33 @@ const convertSql = (sql) => {
 // Compatibility wrapper for SQLite-like API
 const db = {
   all: (sql, params, callback) => {
+    if (typeof params === 'function') {
+      callback = params;
+      params = [];
+    }
     const pgSql = convertSql(sql);
     pool.query(pgSql, params, (err, res) => {
       if (callback) callback(err, res ? res.rows : null);
     });
   },
   get: (sql, params, callback) => {
+    if (typeof params === 'function') {
+      callback = params;
+      params = [];
+    }
     const pgSql = convertSql(sql);
     pool.query(pgSql, params, (err, res) => {
       if (callback) callback(err, res ? res.rows[0] : null);
     });
   },
   run: function(sql, params, callback) {
+    if (typeof params === 'function') {
+      callback = params;
+      params = [];
+    }
     const pgSql = convertSql(sql);
     pool.query(pgSql, params, (err, res) => {
       if (callback) {
-        // Mocking SQLite's this.lastID and this.changes
         const context = {
           lastID: res?.rows?.[0]?.id || null,
           changes: res?.rowCount || 0
@@ -53,7 +64,7 @@ const db = {
       }
     });
   },
-  serialize: (fn) => fn(), // PostgreSQL pool handles serialization differently, but we keep the structure
+  serialize: (fn) => fn(),
   close: () => pool.end()
 };
 

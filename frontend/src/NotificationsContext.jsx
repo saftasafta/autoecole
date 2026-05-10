@@ -29,8 +29,8 @@ export const NotificationsProvider = ({ children }) => {
         const daysLeft = Math.ceil((expDate - today) / (1000 * 60 * 60 * 24));
         if (daysLeft <= 0) {
           alerts.push({ id: `ins-${v.id}`, type: 'danger', icon: '🛡️', title: t('alert_ins_expired'), message: `${label} — ${daysLeft === 0 ? t('expired') : `${t('expired_since')} ${Math.abs(daysLeft)} ${t('days')}`}`, vehicleId: v.id, action: 'insurance' });
-        } else if (daysLeft <= 2) {
-          alerts.push({ id: `ins-${v.id}`, type: 'warning', icon: '🛡️', title: t('insurance_ending_soon'), message: `${label} — ${t('insurance_ends_in')} ${daysLeft} ${t('days')}`, vehicleId: v.id, action: 'insurance' });
+        } else if (daysLeft === 1) {
+          alerts.push({ id: `ins-${v.id}`, type: 'warning', icon: '🛡️', title: t('insurance_ending_soon'), message: `${label} — ${t('insurance_ends_in')} 1 ${t('days')}`, vehicleId: v.id, action: 'insurance' });
         }
       }
 
@@ -40,7 +40,7 @@ export const NotificationsProvider = ({ children }) => {
         const remaining = interval - driven;
         if (remaining <= 0) {
           alerts.push({ id: `oil-${v.id}`, type: 'danger', icon: '🔧', title: t('alert_oil_required'), message: `${label} — ${t('oil_exceeded')} ${Math.abs(remaining).toLocaleString()} ${t('oil_remaining')}`, vehicleId: v.id, action: 'oil' });
-        } else if (remaining <= 1000) {
+        } else if (remaining <= 500) {
           alerts.push({ id: `oil-${v.id}`, type: 'warning', icon: '🔧', title: t('oil_soon'), message: `${label} — ${t('oil_left')} ${remaining.toLocaleString()} ${t('oil_to_change')}`, vehicleId: v.id, action: 'oil' });
         }
       }
@@ -50,8 +50,8 @@ export const NotificationsProvider = ({ children }) => {
         const techDays = Math.ceil((techDate - today) / (1000 * 60 * 60 * 24));
         if (techDays <= 0) {
           alerts.push({ id: `tech-${v.id}`, type: 'danger', icon: '📋', title: t('alert_tech_expired'), message: `${label} — ${techDays === 0 ? t('expired') : `${t('expired_since')} ${Math.abs(techDays)} ${t('days')}`}`, vehicleId: v.id, action: 'tech' });
-        } else if (techDays <= 2) {
-          alerts.push({ id: `tech-${v.id}`, type: 'warning', icon: '📋', title: t('tech_ending_soon'), message: `${label} — ${t('tech_ends_in')} ${techDays} ${t('days')}`, vehicleId: v.id, action: 'tech' });
+        } else if (techDays === 1) {
+          alerts.push({ id: `tech-${v.id}`, type: 'warning', icon: '📋', title: t('tech_ending_soon'), message: `${label} — ${t('tech_ends_in')} 1 ${t('days')}`, vehicleId: v.id, action: 'tech' });
         }
       }
     });

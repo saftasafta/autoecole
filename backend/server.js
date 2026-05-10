@@ -579,7 +579,7 @@ app.get('/api/exams/today', authenticateToken, (req, res) => {
     FROM sessions 
     LEFT JOIN students ON sessions.student_id = students.id
     WHERE sessions.type ILIKE 'Examen%' 
-    AND sessions.start_time::date = CURRENT_DATE
+    AND sessions.start_time::date = (CURRENT_TIMESTAMP AT TIME ZONE 'UTC' + INTERVAL '2 hours')::date
     AND sessions.status != 'cancelled'
     ORDER BY start_time ASC
   `, [], (err, rows) => {

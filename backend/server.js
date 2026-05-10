@@ -179,7 +179,8 @@ app.get('/api/students', authenticateToken, (req, res) => {
           COALESCE((SELECT SUM(duration_hours) FROM sessions WHERE student_id = s.id AND type = 'Code' AND status != 'cancelled'), 0) as total_code_hours,
           (SELECT COUNT(*) FROM sessions WHERE student_id = s.id AND type = 'Examen Code' AND status != 'cancelled') as count_exam_code,
           (SELECT COUNT(*) FROM sessions WHERE student_id = s.id AND type = 'Examen Conduite' AND status != 'cancelled') as count_exam_driving,
-          (SELECT COUNT(*) FROM sessions WHERE student_id = s.id AND type = 'Examen Parking' AND status != 'cancelled') as count_exam_parking
+          (SELECT COUNT(*) FROM sessions WHERE student_id = s.id AND type = 'Examen Parking' AND status != 'cancelled') as count_exam_parking,
+          (SELECT COUNT(*) FROM sessions WHERE student_id = s.id AND status != 'cancelled' AND type NOT LIKE 'Examen%') as total_sessions_count
         ${baseQuery}
         ORDER BY s.id DESC
         LIMIT ? OFFSET ?

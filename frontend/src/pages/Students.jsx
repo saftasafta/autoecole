@@ -7,7 +7,7 @@ import StudentModal from '../components/StudentModal';
 import Pagination from '../components/Pagination';
 
 const Students = () => {
-  const { t } = useLanguage();
+  const { t, lang } = useLanguage();
   const [students, setStudents] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [newStudent, setNewStudent] = useState({ name: '', cin: '', phone: '', notes: '' });
@@ -130,7 +130,7 @@ const Students = () => {
                     </td>
                     <td>{student.cin || 'N/A'}</td>
                     <td>{student.phone || 'N/A'}</td>
-                    <td style={{ fontWeight: '500' }}>{student.total_driving_hours}h</td>
+                    <td style={{ fontWeight: '500' }}>{student.total_sessions_count || 0} {lang === 'ar' ? 'حصة' : 'sessions'}</td>
                     <td style={{ fontWeight: '800', color: student.remaining_balance > 0 ? '#EF4444' : '#10B981' }}>{student.remaining_balance > 0 ? student.remaining_balance : 0} DT</td>
                     <td>
                       <span className={`badge ${student.payment_status === 'Payé' || student.payment_status === 'Payé' ? 'badge-success' : 'badge-danger'}`}>
